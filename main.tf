@@ -1,8 +1,3 @@
-#Define the Azure provider block:
-
-provider "azurerm" {
-features {}
-}
 
 #Define the resource group that will contain your MySQL instance:
 resource "azurerm_resource_group" "mysql_rg" {
@@ -35,13 +30,4 @@ resource "azurerm_mysql_database" "wordpress_db" {
   server_name         = azurerm_azureproject.azureproject_server.name
   charset             = "utf8"
   collation           = "utf8_general_ci"
-}
-
-# Define the Terraform output to return the MySQL instance hostname and database name:
-output "mysql_hostname" {
-  value = azurerm_mysql_server.azureproject_server.fqdn
-}
-
-output "mysql_database_name" {
-  value = azurerm_mysql_database.wordpress_db.name
 }
