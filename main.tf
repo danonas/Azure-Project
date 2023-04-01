@@ -1,42 +1,32 @@
-resource "azurerm_resource_group" "res_Gr_Ex" {
-  name     = "${var.resource_group_name}_ResourceGr"
-  location = var.vnet_location
-
-    tags = {
-            DecDevop22 = "AzureProject"
-    }
+resource "azurerm_resource_group" "wordpress" {
+  name     = "example-resources"
+  location = "West Europe"
 }
 
-resource "azurerm_network_security_group" "vnet" {
-  name                = "${var.resource_group_name}_SecurityGr"
-  location            = azurerm_resource_group.res_Gr_Ex.location
-  resource_group_name = azurerm_resource_group.res_Gr_Ex.name
+resource "azurerm_virtual_network" "wordpress" {
+  name                = "example-network"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.wordpress.location
+  resource_group_name = azurerm_resource_group.wordpress.name
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.vnet_name}_VNet"
-  location            = azurerm_resource_group.res_Gr_Ex.location
-  resource_group_name = azurerm_resource_group.res_Gr_Ex.name
-  address_space       = var.address_space
-    dns_servers         = ["10.0.0.4", "10.0.0.5"]
+resource "azurerm_subnet" "wordpress" {
+  name                 = "internal"
+  resource_group_name  = azurerm_resource_group.wordpress.name
+  virtual_network_name = azurerm_virtual_network.wordpress.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
 
-  subnet {
-    name           = "subnet1"
-    address_prefix = "10.0.1.0/24"
-  }
+resource "azurerm_subnet" "wordpress2" {
+  name                 = "internal2"
+  address_prefixes     = ["10.0.3.0/24"]
+  resource_group_name  = azurerm_resource_group.wordpress.name
+  virtual_network_name = azurerm_virtual_network.wordpress.name
+}
 
-  subnet {
-    name           = "subnet2"
-    address_prefix = "10.0.2.0/24"
-    security_group = azurerm_network_security_group.vnet.id
-  }
-
-    subnet {
-    name           = "subnet3"
-    address_prefix = "10.0.3.0/24"
-  }
-
-  tags = {
-    DecDevop22 = "AzureProject"
-  }
+resource "azurerm_subnet" "wordpress3" {
+  name                 = "internal3"
+  address_prefixes     = ["10.0.4.0/24"]
+  resource_group_name  = azurerm_resource_group.wordpress.name
+  virtual_network_name = azurerm_virtual_network.wordpress.name
 }
