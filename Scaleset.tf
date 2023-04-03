@@ -12,7 +12,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "wordpress" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "18.04-LTS" # Updated form 16 to 18
+    sku       = "18.04-LTS" # Updated from 16 to 18
     version   = "latest"
   }
 
@@ -22,7 +22,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "wordpress" {
   }
 
   network_interface {
-    name    = "NetworkInterface"
+    name = "NetworkInterface"
     primary = true
 
     ip_configuration {
@@ -32,5 +32,27 @@ resource "azurerm_linux_virtual_machine_scale_set" "wordpress" {
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id] # Every VM thats craeted within Scale set , will get IP configuration that assigns it to that load balancer's back-end pool that we create
     }
   }
-  
+
+  network_interface {
+    name = "NetworkInterface2"
+
+    ip_configuration {
+      name                                   = "internal"
+      primary                                = false
+      subnet_id                              = azurerm_subnet.wordpress2.id
+      load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id] 
+    }
+  }
+
+  network_interface {
+    name = "NetworkInterface3"
+
+    ip_configuration {
+      name                                   = "internal"
+      primary                                = false
+      subnet_id                              = azurerm_subnet.wordpress3.id
+      load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id] 
+    }
+  }
+
 }
