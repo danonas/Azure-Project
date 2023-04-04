@@ -1,0 +1,1 @@
+location = " Norway East "
